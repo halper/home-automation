@@ -3,12 +3,13 @@ const router = express.Router()
 const jwt = require('jsonwebtoken')
 const User = require('../../models/user')
 const config = require('../../config')
+const { verifyToken } = require('../../utilities')
 
 // Get users
-router.get('/', (req, res) => {
+router.get('/', verifyToken, (req, res) => {
   User.find({}, (err, users) => {
     if (err) console.log(err)
-    res.send(users, res)
+    res.send(users)
   })
 })
 

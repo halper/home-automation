@@ -1,18 +1,18 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const Sensor = require('../../models/sensor');
-const SensorData = require('../../models/sensorData');
+const Sensor = require('../../models/sensor')
+const SensorData = require('../../models/sensorData')
 
 // Get sensors
 router.get('/', (req, res) => {
-  Sensor.find({}, function (err, sensors) {
+  Sensor.find({}, function(err, sensors) {
     if (err) {
       console.log(err)
     }
     res.send(sensors)
   })
-});
+})
 
 // Create a sensor
 router.post('/', (req, res) => {
@@ -32,13 +32,13 @@ router.put('/', (req, res) => {
   if (body.status) {
     updateQuery['status'] = body.status
   }
-  if (body.address){
+  if (body.address) {
     updateQuery['address'] = body.address
   }
   if (body.location) {
     updateQuery['location'] = body.location
   }
-  Sensor.updateOne({_id: body._id}, updateQuery, (err, writeOp) => {
+  Sensor.updateOne({ _id: body._id }, updateQuery, (err, writeOp) => {
     if (err) console.log(err)
     res.sendStatus(204)
   })
@@ -49,23 +49,23 @@ router.get('/data', (req, res) => {
   const startDate = new Date(req.body.startDate)
   const endDate = new Date(req.body.endDate)
   let query = {
-    readingTime: { $gte: startDate, $lte: endDate}
+    readingTime: { $gte: startDate, $lte: endDate }
   }
   if (req.body.sensorAddress) {
-    query['sensorAddress'] = req.body.sensorAddress;
+    query['sensorAddress'] = req.body.sensorAddress
   }
   SensorData.find(query, (err, sensorData) => {
-    if (err) console.log(err);
+    if (err) console.log(err)
     res.send(sensorData)
-  });
+  })
 })
 
 // Get sensor
 router.get('/:address', (req, res) => {
-  Sensor.find({address: req.params.address}, (err, sensor) => {
-    if (err) console.log(err);
+  Sensor.find({ address: req.params.address }, (err, sensor) => {
+    if (err) console.log(err)
     res.send(sensor)
   })
 })
 
-module.exports = router;
+module.exports = router

@@ -4,7 +4,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+const { verifyToken } = require('./utilities')
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -12,37 +13,41 @@ config.dev = !(process.env.NODE_ENV === 'production')
 
 // DB connection
 const dbConf = require('./config')
-const connectionString = `mongodb+srv://${dbConf.username}:${dbConf.password}@${dbConf.host}/${dbConf.db}`
+const connectionString = `mongodb+srv://${dbConf.username}:${dbConf.password}@${
+  dbConf.host
+}/${dbConf.db}`
 mongoose.connect(connectionString, { useNewUrlParser: true })
 let db = mongoose.connection
 
 // Check connection
 db.once('open', function() {
   console.log('Connected to the MongoDB')
-});
+})
 
 // Check for DB errors
-db.on('error', function(err){
+db.on('error', function(err) {
   console.log(err)
 })
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 app.use(cors())
 
-
 // Routes
-const sensors = require('./routes/api/sensors');
-const program = require('./routes/api/program');
-const precedence = require('./routes/api/precedence');
-const heater = require('./routes/api/heater');
+const sensors = require('./routes/api/sensors')
+const program = require('./routes/api/program')
+const precedence = require('./routes/api/precedence')
+const heater = require('./routes/api/heater')
 const users = require('./routes/api/users')
 
-app.use('/api/sensors', sensors);
-app.use('/api/program', program);
-app.use('/api/precedence', precedence);
-app.use('/api/heater', heater);
-app.use('/api/users', users);
+// Restricted API endpoints
+app.use('/api/r', verifyToken)
+app.use('/api/r/sensors', sensors)
+app.use('/api/r/program', program)
+app.use('/api/r/precedence', precedence)
+app.use('/api/r/heater', heater)
+
+app.use('/api/users', users)
 
 async function start() {
   // Init Nuxt.js
