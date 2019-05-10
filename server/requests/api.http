@@ -1,0 +1,10 @@
+GET http://localhost:3000/api/sensors
+
+###
+POST http://localhost:3000/api/users/login 
+Content-Type: application/json
+
+{
+	"username": "alper",
+	"password": "12345"
+}

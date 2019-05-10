@@ -36,11 +36,13 @@ const sensors = require('./routes/api/sensors');
 const program = require('./routes/api/program');
 const precedence = require('./routes/api/precedence');
 const heater = require('./routes/api/heater');
+const users = require('./routes/api/users')
 
 app.use('/api/sensors', sensors);
 app.use('/api/program', program);
 app.use('/api/precedence', precedence);
 app.use('/api/heater', heater);
+app.use('/api/users', users);
 
 async function start() {
   // Init Nuxt.js
